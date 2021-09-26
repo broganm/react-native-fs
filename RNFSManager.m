@@ -61,8 +61,18 @@ RCT_EXPORT_METHOD(readDir:(NSString *)dirPath
   contents = [contents rnfs_mapObjectsUsingBlock:^id(NSString *obj, NSUInteger idx) {
     NSString *path = [dirPath stringByAppendingPathComponent:obj];
     NSDictionary *attributes = [fileManager attributesOfItemAtPath:path error:nil];
-
-    return @{
+    
+    if ( [attributes objectForKey:NSFileSize] == nil ) {
+       return @{
+             @"ctime": [self dateToTimeIntervalNumber:(NSDate *)[attributes objectForKey:NSFileCreationDate]],
+             @"mtime": [self dateToTimeIntervalNumber:(NSDate *)[attributes objectForKey:NSFileModificationDate]],
+             @"name": obj,
+             @"path": path,
+             @"size": 0,
+             @"type": NSFileTypeRegular
+             };
+    } else {
+       return @{
              @"ctime": [self dateToTimeIntervalNumber:(NSDate *)[attributes objectForKey:NSFileCreationDate]],
              @"mtime": [self dateToTimeIntervalNumber:(NSDate *)[attributes objectForKey:NSFileModificationDate]],
              @"name": obj,
@@ -70,6 +80,7 @@ RCT_EXPORT_METHOD(readDir:(NSString *)dirPath
              @"size": [attributes objectForKey:NSFileSize],
              @"type": [attributes objectForKey:NSFileType]
              };
+    }
   }];
 
   if (error) {
