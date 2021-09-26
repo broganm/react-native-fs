@@ -68,7 +68,7 @@ RCT_EXPORT_METHOD(readDir:(NSString *)dirPath
              @"mtime": [self dateToTimeIntervalNumber:(NSDate *)[attributes objectForKey:NSFileModificationDate]],
              @"name": obj,
              @"path": path,
-             @"size": 0,
+             @"size": @0,
              @"type": NSFileTypeRegular
              };
     } else {
